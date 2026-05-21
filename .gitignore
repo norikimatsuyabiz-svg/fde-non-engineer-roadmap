@@ -1,0 +1,20 @@
+# Original InterviewCat source materials (copyrighted, not committed)
+3.1-*.md
+3.2-*.md
+3.3-*.md
+3.4-*.md
+3.5-*.md
+FDE-InterviewCat-*.md
+イントロダクション-*.md
+第1章*.md
+第2章*.md
+第3章*.md
+第4章*.md
+第5章*.md
+第6章*.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

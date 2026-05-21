@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>非エンジニアがFDEを目指すためのロードマップ</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #555;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --border: #e5e7eb;
+    --code-bg: #f4f4f5;
+    --table-stripe: #fafafa;
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --ok: #047857;
+    --ok-bg: #ecfdf5;
+    --tip-bg: #1f2937;
+    --tip-fg: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
+                 "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+    line-height: 1.85;
+    color: var(--fg);
+    background: var(--bg);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+  }
+  h1 {
+    font-size: 2rem;
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 0.5rem;
+    margin-top: 2.5rem;
+    line-height: 1.4;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 3rem;
+    padding: 0.4rem 0.8rem;
+    background: var(--accent-light);
+    border-left: 5px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+  h3 {
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    color: var(--accent);
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.3rem;
+  }
+  h4 {
+    font-size: 1.05rem;
+    margin-top: 1.5rem;
+    color: var(--fg);
+  }
+  p { margin: 0.8rem 0; }
+  ul, ol { padding-left: 1.5rem; }
+  li { margin: 0.3rem 0; }
+  strong { color: var(--accent); font-weight: 700; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--accent-light); font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--table-stripe); }
+  pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border: 1px solid var(--border);
+  }
+  code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  pre code { background: none; padding: 0; }
+  .toc {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem 1.5rem;
+    margin: 2rem 0;
+  }
+  .toc h3 { margin-top: 0; border-bottom: none; color: var(--fg); }
+  .toc ol { margin: 0.5rem 0; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-light);
+    padding: 0.8rem 1.2rem;
+    margin: 1.2rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout-warn { border-left-color: var(--warn); background: var(--warn-bg); }
+  .callout-ok { border-left-color: var(--ok); background: var(--ok-bg); }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li::before {
+    content: "☐ ";
+    color: var(--accent);
+    font-weight: bold;
+    margin-right: 0.3rem;
+  }
+  .phase-label {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* ===== 用語ホバー解説 ===== */
+  .t {
+    border-bottom: 1px dotted var(--accent);
+    cursor: help;
+    position: relative;
+    color: inherit;
+  }
+  .t:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--tip-bg);
+    color: var(--tip-fg);
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: normal;
+    line-height: 1.6;
+    white-space: normal;
+    width: max-content;
+    max-width: 340px;
+    z-index: 100;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    pointer-events: none;
+    text-align: left;
+  }
+  .t:hover::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--tip-bg);
+    z-index: 100;
+    pointer-events: none;
+  }
+  .legend {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+  .legend .t { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>非エンジニアがFDEを目指すためのロードマップ</h1>
+
+<div class="legend">
+<strong>💡 用語の読み方</strong><br>
+青の点線下線がついた語（例：<span class="t" data-tip="お客さんの会社に常駐して、AIシステムを実装・導入するエンジニア。Forward Deployed Engineerの略。">FDE</span>）は、マウスを乗せると意味が吹き出しで表示されます。スマホの場合はタップしてください。
+</div>
+
+<div class="toc">
+  <h3>目次</h3>
+  <ol>
+    <li><a href="#intro">はじめに：このロードマップが解く問題</a></li>
+    <li><a href="#part0">第0部：FDEで証明すべき6つの力と非エンジニアの勝ち筋</a></li>
+    <li><a href="#part1">第1部：標準ロードマップ（24週間）</a></li>
+    <li><a href="#phase0">フェーズ0：方向決め（1週）</a></li>
+    <li><a href="#phase1">フェーズ1：技術基礎（4週）</a></li>
+    <li><a href="#phase2">フェーズ2：要件定義と設計（3週）</a></li>
+    <li><a href="#phase3">フェーズ3：LLMアプリ実装（4週）</a></li>
+    <li><a href="#phase4">フェーズ4：システム実務力とデバッグ（4週）</a></li>
+    <li><a href="#phase5">フェーズ5：FDEポートフォリオ（4週）</a></li>
+    <li><a href="#phase6">フェーズ6：面接対策（3週）</a></li>
+    <li><a href="#phase7">フェーズ7：レジュメと応募戦略（1週）</a></li>
+    <li><a href="#rhythm">第2部：週次の学習リズム</a></li>
+    <li><a href="#questioning">第3部：質問する力を鍛える</a></li>
+    <li><a href="#english">第4部：英語対策</a></li>
+    <li><a href="#milestone">第5部：マイルストーンと自己診断</a></li>
+    <li><a href="#skip">第6部：やらなくてよいこと</a></li>
+    <li><a href="#recovery">第7部：詰まった時のリカバリプラン</a></li>
+    <li><a href="#goal">最終ゴール</a></li>
+  </ol>
+</div>
+
+<h2 id="intro">はじめに：このロードマップが解く問題</h2>
+
+<p><span class="t" data-tip="お客さんの会社に常駐して、AIシステムを実装・導入するエンジニア。Forward Deployed Engineerの略。">FDE</span> InterviewCat の原典（第1〜6章＋コーディング5題）は、現役<span class="t" data-tip="ソフトウェアエンジニア。Software Engineerの略。一般的なプログラマー職。">SWE</span>が<span class="t" data-tip="FDEの3類型のうち、コードを書いて顧客先でAIを実装することがメインのタイプ。業務時間の70〜90%がコーディング。">Builder FDE</span>面接を突破することを前提に書かれています。そのため、非エンジニア（<span class="t" data-tip="プロダクトマネージャー。製品の方針・優先順位を決める役割。">PdM</span>、コンサル、営業、<span class="t" data-tip="事業開発（Business Development）。新規取引や提携を作る役割。">BizDev</span>、<span class="t" data-tip="カスタマーサクセス。導入後の顧客サポート・活用支援を行う役割。">CS</span>、業務改善担当、データアナリスト、デザイナーなど）が同じ順番で読むと、第3章のコーディング演習や第4章のデバッグ系システムデザインで早々に詰まります。</p>
+
+<p>このロードマップは、非エンジニアが「曖昧な顧客課題を技術で解く力」を可視化し、面接通過レベルまで引き上げるための再構成版です。前提として置く現実は3つあります。</p>
+
+<ol>
+  <li><strong>トップAIラボのBuilder FDEに最短距離で届くのは難しい</strong>。狙うべき第一の入口は、日系AI企業のFDE／AIソリューションエンジニア／<span class="t" data-tip="技術提案やアーキ設計が中心で、実装は30〜40%程度のFDEタイプ。コードより顧客折衝が多い。">Sales Engineer+</span>型FDE／AI導入コンサル兼実装担当である。</li>
+  <li><strong>非エンジニアの最大の武器は「顧客課題理解」と「曖昧さへの耐性」</strong>。原典が繰り返し示すとおり、FDEはアルゴリズム力ではなく現場の曖昧さを前に進める力で評価される。非エンジニアはこの土台をすでに持っている。</li>
+  <li><strong>コードが書けないままでは絶対にFDEにはなれない</strong>。少なくとも「<span class="t" data-tip="Application Programming Interface。他のシステムへの「問い合わせ窓口」のこと。例：天気APIを呼ぶと天気データが返ってくる。">LLM API</span>を叩き、データを保存し、ツールを呼び、READMEに設計判断を書ける」レベルは必須。逆に言えば、そこまでで十分。</li>
+</ol>
+
+<div class="callout callout-ok">
+<strong>このロードマップを完走すると、最低でも次の状態になります。</strong>
+<ul>
+  <li><span class="t" data-tip="大規模言語モデル（Large Language Model）。ChatGPTやClaudeのように、自然な文章を生成するAI。">LLM</span>を使った旗艦プロジェクトが1つ<span class="t" data-tip="プログラムのソースコードを公開・共有できるオンラインサービス。ポートフォリオの定番。">GitHub</span>にあり、<span class="t" data-tip="プロジェクトのトップにある説明書ファイル（README.md）。使い方や設計思想を書く。">README</span>で設計判断を語れる</li>
+  <li>第3章のコーディング5題のうち、AI寄りの3題（<span class="t" data-tip="ターミナル（黒い画面）で動かす文字ベースのアプリ。Command Line Interface。">LLM CLI</span>、会話履歴、ツールディスパッチャー）をゼロから実装できる</li>
+  <li>第4章のデバッグ形式の面接で「仮説→検証→切り分け」を口に出せる</li>
+  <li>第5章の行動面接4テーマを、自分の非エンジニア経験から語れる</li>
+  <li>日系AI企業／Sales Engineer+型FDE／AI Solution Engineerに現実的に応募できる</li>
+</ul>
+</div>
+
+<h2 id="part0">第0部：FDEで証明すべき6つの力と非エンジニアの勝ち筋</h2>
+
+<p>FDEはコードを書けるコンサルでも顧客対応できるSWEでもなく、<strong>顧客の曖昧な課題を、動くAIシステムに変える役割</strong>です。書類と面接で証明すべき力は以下の6つに集約されます。</p>
+
+<table>
+  <thead>
+    <tr><th>軸</th><th>求められる状態</th><th>非エンジニアの武器</th><th>補うもの</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>顧客理解</td><td>業務課題、制約、ステークホルダーを構造化できる</td><td>ヒアリング、提案、<span class="t" data-tip="プロダクトマネージャー。製品の方針・優先順位を決める役割。">PM</span>、コンサル経験</td><td>技術要件への翻訳</td></tr>
+    <tr><td>実装力</td><td>小さな<span class="t" data-tip="ユーザーから見えないサーバー側のプログラム。データを処理して結果を返す部分。">バックエンド</span>、CLI、AIアプリを作れる</td><td>業務理解を仕様にできる</td><td><span class="t" data-tip="プログラミング言語。AI寄りの開発で最も主流。">Python</span>／<span class="t" data-tip="Web系開発で主流のプログラミング言語。JavaScriptに型を付けた拡張版。">TypeScript</span>、<span class="t" data-tip="ソースコードの変更履歴を管理するツール。エンジニアの必須スキル。">Git</span>、API、<span class="t" data-tip="データを保存しておく仕組み。表形式で管理することが多い。Database。">DB</span></td></tr>
+    <tr><td>AI/LLM理解</td><td><span class="t" data-tip="検索拡張生成（Retrieval-Augmented Generation）。AIが回答する前に社内文書を検索し、それを根拠に答える方式。">RAG</span>、<span class="t" data-tip="LLMに「外部のツール（関数）を呼んでよい」と教える仕組み。Tool Useとも言う。">Function Calling</span>、コンテキスト管理、<span class="t" data-tip="AIシステムの正答率や品質を測る仕組み（Evaluation）。テストのAI版。">Eval</span>を説明・実装できる</td><td>ユースケース設計、効果定義</td><td>LLM API、ツール実行、評価</td></tr>
+    <tr><td>システム設計</td><td>現実的な制約下で<span class="t" data-tip="システム全体の構成・部品の組み合わせのこと。建築でいう設計図。">アーキテクチャ</span>を選べる</td><td>課題整理、優先順位付け、<span class="t" data-tip="投資対効果（Return on Investment）。かけたコストに対してどれだけ成果が出るか。">ROI</span>判断</td><td>DB、<span class="t" data-tip="処理を一度に行わず、順番待ちの列に並べて処理する仕組み。混雑緩和に使う。">キュー</span>、<span class="t" data-tip="本人確認の仕組み。ログインなど。">認証</span>、<span class="t" data-tip="システムの動作状況を計測・記録すること。Monitoring。">監視</span>、スケーリング</td></tr>
+    <tr><td>デバッグ</td><td>仮説駆動でログ・<span class="t" data-tip="CPU使用率、メモリ使用量などの数値データ（Metrics）。システムの健康状態を表す。">メトリクス</span>を取りにいける</td><td>問題分解、現場対応</td><td><span class="t" data-tip="Out Of Memory。メモリ不足。アプリが使えるメモリ上限を超えた状態。">OOM</span>、レート制限、ネットワーク、DB負荷</td></tr>
+    <tr><td>コミュニケーション</td><td>技術を非技術者に翻訳し、プロダクト改善に戻せる</td><td>非エンジニアの最強領域</td><td>技術的な正確さ</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+非エンジニアが面接で勝つのは、6軸すべてを満点にすることではありません。<strong>「顧客理解」「コミュニケーション」を満点に保ったまま、「実装力」「AI/LLM理解」を“議論できる最低ライン”まで持ち上げ、「システム設計」「デバッグ」は自分のプロジェクトの範囲だけ深く語れる状態</strong>を作ることです。
+</div>
+
+<h3>出身タイプ別の勝ち筋</h3>
+
+<table>
+  <thead>
+    <tr><th>出身</th><th>武器</th><th>落とし穴</th><th>重点強化</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PdM</td><td>要件定義、優先順位、ステークホルダー調整</td><td>「自分は書かなくていい」と思いがち</td><td>自分でAIプロト実装、Evalまで触る</td></tr>
+    <tr><td>コンサル</td><td>構造化、論点整理、<span class="t" data-tip="Proof of Concept（概念実証）。技術や企画が成立するかを小さく試すこと。">PoC</span>設計</td><td>提案資料止まり、コードに触らない</td><td>LLMアプリ実装、READMEで設計判断</td></tr>
+    <tr><td>営業／BizDev</td><td>顧客折衝、課題ヒアリング、業界知識</td><td>技術用語が表層的</td><td>API/DB/LLMの仕組みを実装で理解</td></tr>
+    <tr><td>カスタマーサクセス</td><td>運用、トラブル切り分け、顧客の声</td><td>デバッグを定性的に語りがち</td><td>ログ・メトリクス・仮説の言語化</td></tr>
+    <tr><td>業務改善／<span class="t" data-tip="Robotic Process Automation。決まった事務作業をPC上で自動化するツール。">RPA</span></td><td>業務フロー設計、現場巻き込み</td><td>スクリプトレベルで止まる</td><td>バックエンド／DB／LLMアプリ実装</td></tr>
+    <tr><td>データアナリスト</td><td><span class="t" data-tip="データベースを操作するための言語。検索や集計に使う。">SQL</span>、データ理解、可視化</td><td>プロダクション運用経験が薄い</td><td>API/エラー処理／本番設計を学ぶ</td></tr>
+    <tr><td>デザイナー／その他</td><td><span class="t" data-tip="User Experience。ユーザーが製品を使う際の体験全体。">UX</span>、顧客視点</td><td>コードの不在</td><td>Python/TS基礎＋AIプロト1つ</td></tr>
+  </tbody>
+</table>
+
+<h2 id="part1">第1部：標準ロードマップ（24週間）</h2>
+
+<p>目安は24週間。SQLやAPI連携が既にできる人は12〜16週間に圧縮可能。仕事をしながら完全未経験で進む場合は6〜9か月を見込みます。</p>
+
+<table>
+  <thead>
+    <tr><th>フェーズ</th><th>期間</th><th>ゴール</th><th>成果物</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0. 方向決め</td><td>1週</td><td>FDEの型と自分の勝ち筋を決める</td><td>Why FDEメモ、経験棚卸し</td></tr>
+    <tr><td>1. 技術基礎</td><td>4週</td><td>API、DB、Git、CLI、テストに慣れる</td><td>小さなAPI/CLI/DBアプリ</td></tr>
+    <tr><td>2. 要件定義と設計</td><td>3週</td><td>顧客課題を仕様と設計に落とす</td><td>1ページ設計メモ×5本</td></tr>
+    <tr><td>3. LLMアプリ実装</td><td>4週</td><td>LLM API、RAG、<span class="t" data-tip="LLMがツールを呼び出して作業する仕組み。Function Callingとほぼ同義。">Tool Use</span>を実装する</td><td><span class="t" data-tip="エージェント（AIが自律的に行動するシステム）開発のひな型レポジトリ。">Agent Starter Repo</span></td></tr>
+    <tr><td>4. システム実務力</td><td>4週</td><td>レート制限、<span class="t" data-tip="複数の処理を同時に走らせること。順番待ちを減らせるが、競合やバグも起きやすい。">並行処理</span>、ログ、デバッグを学ぶ</td><td>デバッグノート、実装演習</td></tr>
+    <tr><td>5. ポートフォリオ</td><td>4週</td><td>FDEらしい旗艦プロジェクトを作る</td><td>旗艦プロジェクト1つ</td></tr>
+    <tr><td>6. 面接対策</td><td>3週</td><td>Coding／System Design／Behavioralを通す</td><td>模擬面接回答集</td></tr>
+    <tr><td>7. 応募準備</td><td>1週</td><td><span class="t" data-tip="Job Description。求人票・職務記述書。">JD</span>別レジュメと応募戦略を作る</td><td>FDE型レジュメ＋応募リスト</td></tr>
+  </tbody>
+</table>
+
+<h2 id="phase0"><span class="phase-label">Phase 0</span>方向決め（1週）</h2>
+
+<p>最初の1週間で、FDEの型と自分の入口を確定します。第1章で示された3タイプを、非エンジニア視点で再評価します。</p>
+
+<table>
+  <thead>
+    <tr><th>タイプ</th><th>内容</th><th>非エンジニアからの現実度</th><th>最初の入口として</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Builder FDE</td><td>顧客先でAIシステムを実装・本番導入。コード70〜90%</td><td>短期は難、目標として置く</td><td>中期目標</td></tr>
+    <tr><td>Sales Engineer+</td><td>技術提案・アーキ設計が中心、実装30〜40%</td><td>高い</td><td>◎最初の入口</td></tr>
+    <tr><td>Internal Tools Builder</td><td>社内<span class="t" data-tip="Digital Transformation。デジタル技術で業務や事業を変革すること。">DX</span>／業務改善のAI化</td><td>高い、実績作りに最適</td><td>◎旗艦実績の作り方</td></tr>
+  </tbody>
+</table>
+
+<p>非エンジニアの勝ち筋は「自分はエンジニアと同じ土俵で書けます」ではなく、「顧客課題を深く理解し、AIプロトを自分で作り、エンジニアと同じ語彙で議論できます」という立ち位置を作ること。</p>
+
+<h3>やること</h3>
+<ul>
+  <li>FDE志望理由を1ページで書く（Why FDE／Why Now／Why You）</li>
+  <li>過去経験を「顧客課題／要件定義／技術導入／業務改善／ステークホルダー調整」の5項目に棚卸し</li>
+  <li>応募候補を3カテゴリに分ける（外資ラボ、日系AI、AI導入支援）</li>
+  <li>第1章を再読し、外資FDE（プロダクト先行）と日系FDE（顧客課題先行）の違いを自分の言葉で説明できるようにする</li>
+</ul>
+
+<h3>Why FDEメモのテンプレ</h3>
+<ul>
+  <li>顧客に最も近い場所で何かを動かしてきた具体例：</li>
+  <li>それをコードで動かせるようになりたい理由：</li>
+  <li>なぜAI／LLMか：</li>
+  <li>自分が職場でいつ「もっと自分で実装できれば」と思ったか：</li>
+  <li>5年後にどうなっていたいか：</li>
+</ul>
+
+<p><strong>成果物：</strong>Why FDEメモ／棚卸し職務経歴メモ／スキル棚卸しシート。</p>
+
+<h2 id="phase1"><span class="phase-label">Phase 1</span>技術基礎（4週）</h2>
+
+<p>ここでの目的は、立派なエンジニアになることではなく、<strong>「APIを叩き、データを保存し、エラーを扱い、READMEを書ける」状態</strong>になることです。<span class="t" data-tip="アルゴリズムやデータ構造を問うコーディング問題のオンライン演習サイト。GAFA系の面接対策で有名。FDE面接ではほぼ出ない。">LeetCode</span>はしません（理由は<a href="#skip">第6部</a>）。</p>
+
+<h3>Week 1：開発環境とCLI</h3>
+<p><strong>学ぶ：</strong></p>
+<ul>
+  <li><span class="t" data-tip="文字でコマンドを打ってPCを操作する黒い画面。Windowsだと「PowerShell」、Macだと「Terminal」。">ターミナル</span>の基本（cd、ls、<span class="t" data-tip="あるコマンドの出力を別のコマンドに渡す仕組み。「|」記号で繋ぐ。">pipe</span>、<span class="t" data-tip="OSに設定値を保存する仕組み。APIキーなどの秘密情報を入れる定番。">環境変数</span>）</li>
+  <li>Git／<span class="t" data-tip="ソースコードを公開・共有できるオンラインサービス。ポートフォリオの定番。">GitHub</span>（clone、commit、push、<span class="t" data-tip="Pull Request。コード変更を取り込んでもらう申請。レビューを経て本流に反映される。">PR</span>）</li>
+  <li><span class="t" data-tip="プログラミング用のエディタ。Microsoft製で無料。最も普及している。">VS Code</span>または<span class="t" data-tip="VS Codeを拡張したAI補完エディタ。コードをAIに書かせやすい。">Cursor</span>（AI補完を必ず使う）</li>
+  <li>PythonまたはTypeScript（どちらかに絞る。AI寄りはPython推奨）</li>
+  <li><span class="t" data-tip="データを文字で表現する形式。{&quot;name&quot;:&quot;太郎&quot;,&quot;age&quot;:30} のような書き方。API通信の定番。">JSON</span>、<code>.env</code>、設定ファイル</li>
+</ul>
+<p><strong>作る：</strong></p>
+<ul>
+  <li><span class="t" data-tip="Comma-Separated Values。カンマで区切られた表形式のテキストファイル。Excelからも書き出せる。">CSV</span>を読み込んで整形し標準出力に書き出すCLI</li>
+  <li>エラー時に人が読めるメッセージを出す</li>
+  <li>READMEに使い方と失敗ケースを書く</li>
+</ul>
+<p><strong>合格ライン：</strong></p>
+<ul>
+  <li><code>git clone</code> → <code>commit</code> → <code>push</code> をストレスなくできる</li>
+  <li>コマンド一発で自分のスクリプトを実行できる</li>
+  <li>失敗ケースをREADMEに3つ以上書ける</li>
+</ul>
+
+<h3>Week 2：APIとHTTP</h3>
+<p><strong>学ぶ：</strong></p>
+<ul>
+  <li><span class="t" data-tip="Webの通信規格。ブラウザがWebサイトを開く時に使っている仕組み。">HTTP</span>メソッド（<span class="t" data-tip="データを取得する（読む）。">GET</span>／<span class="t" data-tip="データを新規作成する。">POST</span>／<span class="t" data-tip="データを更新する。">PUT</span>／<span class="t" data-tip="データを削除する。">DELETE</span>）</li>
+  <li><span class="t" data-tip="HTTPを使って外部から呼べるAPIの最も標準的な形式。">REST API</span>、<span class="t" data-tip="HTTPレスポンスの結果コード。200=成功、404=見つからない、500=サーバー側エラーなど。">ステータスコード</span>（特に2xx／4xx／5xx）</li>
+  <li>JSON request／response</li>
+  <li><span class="t" data-tip="APIを使う時の身分証明書のような文字列。秘密にする。">APIキー</span>、<span class="t" data-tip="認証情報をHTTPリクエストに添えて送る標準的な方式。">Bearerトークン</span></li>
+  <li><span class="t" data-tip="一定時間応答がなければ諦める仕組み。">タイムアウト</span>、<span class="t" data-tip="失敗した処理を再度試すこと。">リトライ</span>、<span class="t" data-tip="HTTPエラー429＝アクセス過多（Too Many Requests）。">429</span>／<span class="t" data-tip="HTTPエラー503＝サーバーが今応答できない（Service Unavailable）。">503</span>の意味</li>
+</ul>
+<p><strong>作る：</strong></p>
+<ul>
+  <li>外部API（天気、為替、GitHubなど何でも可）を呼ぶCLI</li>
+  <li>失敗時に<span class="t" data-tip="リトライ間隔を倍々に伸ばす方式（1秒→2秒→4秒→8秒）。サーバーを叩きすぎないため。Exponential Backoff。">指数バックオフ</span>でリトライする処理</li>
+  <li>APIキーは<code>.env</code>から読む</li>
+</ul>
+<p><strong>合格ライン：</strong></p>
+<ul>
+  <li>APIレスポンスを構造化して扱える</li>
+  <li>429と503の違いを自分の言葉で説明できる</li>
+  <li>「本番ならどう改善するか」をREADMEに書ける</li>
+</ul>
+
+<h3>Week 3：DBと永続化</h3>
+<p><strong>学ぶ：</strong></p>
+<ul>
+  <li>SQL基本（SELECT／INSERT／UPDATE／DELETE）</li>
+  <li>テーブル設計、<span class="t" data-tip="テーブル内で各行を一意に識別するための列。例：社員番号。">主キー</span>、<span class="t" data-tip="別のテーブルを参照する列。例：注文テーブルから顧客テーブルを参照する顧客ID。">外部キー</span>、<span class="t" data-tip="同じ値が2つ以上入らないようにするルール。例：メールアドレスを一意に保つ。">一意制約</span></li>
+  <li><span class="t" data-tip="軽量なファイルベースのデータベース。1ファイルで完結し、サーバー起動不要。">SQLite</span>または<span class="t" data-tip="本格的なオープンソースのデータベース。多くの本番環境で使われる。">PostgreSQL</span>（どちらでも可、SQLiteが最速）</li>
+  <li><span class="t" data-tip="検索を速くするための仕組み。本の索引と同じ。ただし作りすぎると更新が遅くなる。">インデックス</span>の意味</li>
+</ul>
+<p><strong>作る：</strong></p>
+<ul>
+  <li>顧客問い合わせを保存する小さなチケット管理API</li>
+  <li>ステータス、担当者、優先度、期限、検索条件</li>
+  <li>同じメールアドレスからの重複登録は一意制約で防ぐ</li>
+</ul>
+
+<h3>Week 4：テストと小さな設計</h3>
+<p><strong>学ぶ：</strong></p>
+<ul>
+  <li><span class="t" data-tip="関数や小さな部品ごとに「ちゃんと動くか」を自動チェックする仕組み。">ユニットテスト</span>（<span class="t" data-tip="Pythonで最も普及しているテストフレームワーク。">pytest</span> または <span class="t" data-tip="TypeScriptで普及しているテストフレームワーク。">vitest</span>）</li>
+  <li><span class="t" data-tip="正常値と異常値の境目（0や最大値など）でテストする手法。バグが集中しやすい。">境界値</span>テスト</li>
+  <li><span class="t" data-tip="エラーが起きた時にプログラムを止めずに対処する仕組み。try/catchで書く。">例外処理</span>、<span class="t" data-tip="プログラムの動作記録をファイルや画面に書き出すこと。">ログ</span>出力</li>
+  <li>関数とクラスの責務分割</li>
+</ul>
+<p><strong>作る：</strong></p>
+<ul>
+  <li>Week 3のAPIにテストを追加</li>
+  <li>正常系、異常系、境界値を含める</li>
+  <li><span class="t" data-tip="ログをJSON形式で書き出すこと。後から検索・集計しやすい。">構造化ログ</span>（<span class="t" data-tip="JSON Lines形式。1行1JSONでログを書き出す形式。集計しやすい。">JSON Lines</span>形式）を出す</li>
+</ul>
+
+<h2 id="phase2"><span class="phase-label">Phase 2</span>要件定義と設計（3週）</h2>
+
+<p>第3章の冒頭に明記されているとおり、FDEのコーディング面接は<strong>「問題の理解」「要件の明確化」「最終要件」</strong>から必ず始まります。いきなりコードを書く人より、最初に曖昧さを潰せる人が評価されます。<strong>非エンジニアにとってここは最大の差別化ポイント</strong>。</p>
+
+<h3>身につける型（毎回この順で話す）</h3>
+<ol>
+  <li>何を作るのか（What）</li>
+  <li>誰が使うのか（Who／ユーザー、システム間呼び出し、社内ツールか）</li>
+  <li>入力と出力は何か（Input／Output）</li>
+  <li>今回やる範囲とやらない範囲は何か（In Scope／Out of Scope）</li>
+  <li>失敗時にどう振る舞うか（Failure Mode）</li>
+  <li>本番なら何を追加するか（Productionization）</li>
+</ol>
+
+<h3>練習テーマ（原典のコーディング5題に対応）</h3>
+<p>各テーマで、コードを書く前に<strong>1ページの設計メモ</strong>を書きます。</p>
+
+<table>
+  <thead>
+    <tr><th>題材</th><th>確認すべき曖昧さ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>3.1 <span class="t" data-tip="アクセス頻度を制限する仕組み。例：「1ユーザー1分100回まで」。サーバー過負荷を防ぐ。">レートリミッター</span></td><td>誰単位（user／API key／<span class="t" data-tip="Internet Protocol Address。インターネット上の住所番号。">IP</span>）で制限するか、超過時の挙動、グローバルかエンドポイント別か</td></tr>
+    <tr><td>3.2 LLM会話履歴サービス</td><td>どのメッセージを残すか、<span class="t" data-tip="AIが文章を扱う最小単位。日本語ではだいたい1〜2文字、英語では単語の一部に対応。料金や上限の計算単位。">トークン</span>上限超えの戦略、systemは消さない、最新が大きすぎる時</td></tr>
+    <tr><td>3.3 フライト予約システム</td><td>同一座席の二重予約、<span class="t" data-tip="座席を一時的に押さえる仕組み。予約確定前の数分間だけブロックする。">Seat Hold</span>の挙動、キャンセル時の戻し方</td></tr>
+    <tr><td>3.4 LLM API CLI</td><td><span class="t" data-tip="回答を全部待たず、1文字ずつ表示する方式。ChatGPTの逐次表示がこれ。">ストリーミング</span>表示、設定ファイル形式、プロバイダー切替、APIキーの扱い</td></tr>
+    <tr><td>3.5 ツールディスパッチャー</td><td><span class="t" data-tip="入力値が正しい形・範囲かをチェックすること。例：年齢に文字列が来ていないか。">バリデーション</span>、並行実行、ツール失敗時の挙動、危険操作の制限</td></tr>
+  </tbody>
+</table>
+
+<h3>1ページ設計メモのテンプレ</h3>
+<pre><code>## 背景
+（誰のどんな業務課題か、3行）
+
+## ユースケース
+1.
+2.
+3.
+
+## 要件（In Scope）
+- 機能要件
+- 非機能要件（QPS、レイテンシ、可用性、セキュリティ）
+
+## やらないこと（Out of Scope）
+-
+
+## コアエンティティ
+（テーブル／クラス／関数の主要なもの。フィールド型まで書く）
+
+## API／関数の形
+（シグネチャだけでよい）
+
+## エラーケース
+- 入力不正
+- 上限超え
+- 外部依存失敗
+
+## トレードオフ
+- A案：◯◯ vs B案：◯◯。今回はA案。理由は◯◯。
+
+## 本番化するなら追加するもの
+- 認証、ログ、監視、リトライ、レート制限、監査、A/B、Eval...
+</code></pre>
+
+<p><strong>用語補足：</strong> <span class="t" data-tip="Queries Per Second。1秒あたりのリクエスト数。負荷の指標。">QPS</span>＝1秒あたりのアクセス数、<span class="t" data-tip="リクエストを送ってから応答が返るまでの時間。短いほど良い。">レイテンシ</span>＝応答の遅さ、<span class="t" data-tip="システムが正常に動いている時間の割合。99.9%なら年間8.7時間しか落ちない。">可用性</span>＝止まらない度合い。</p>
+
+<p><strong>合格ライン：</strong>5題すべてについて、コードを書く前に上の設計メモが書けること。コードはまだ書かなくてよい。</p>
+
+<h2 id="phase3"><span class="phase-label">Phase 3</span>LLMアプリ実装（4週）</h2>
+
+<p>FDE候補として最も見せやすい成果物は、LLMを使った小さな実用アプリです。原典では特に3.4／3.2／3.5が「FDEっぽさ」を示す課題として扱われています。</p>
+
+<h3>Week 1：LLM API CLI（3.4対応）</h3>
+<p><strong>作る：</strong></p>
+<ul>
+  <li>ターミナルでLLMと対話できるCLI</li>
+  <li>APIキーは<code>.env</code>または設定ファイルから読む</li>
+  <li>ストリーミング表示（response.text() で全部待たない）</li>
+  <li>OpenAI／<span class="t" data-tip="Claudeシリーズを開発しているAI企業。OpenAIの主要競合。">Anthropic</span>／ローカル<span class="t" data-tip="Open Source Software。ソースコードが公開されている無料ソフトウェア。">OSS</span>（<span class="t" data-tip="LLMをローカルPCで動かすツール。データを外部に送らずAIを使える。">Ollama</span>等）を切り替えられる設計</li>
+</ul>
+<p><strong>見るべき観点：</strong></p>
+<ul>
+  <li>なぜストリーミングが必要か（<span class="t" data-tip="User Experience。ユーザー体験。">UX</span>、メモリ、失敗時の損失）</li>
+  <li>429／503への対応（指数バックオフ）</li>
+  <li>会話履歴をどこまで保持するか（→ Week 2へ）</li>
+  <li>プロバイダー抽象（<span class="t" data-tip="複数のやり方（戦略）を切り替えられるように共通の窓口を作る設計パターン。例：OpenAIもAnthropicも同じ関数で呼べるようにする。">Strategy</span> / <span class="t" data-tip="形が違うものを共通の形に変換する設計パターン。電源プラグの変換アダプタと同じ発想。">Adapter</span>パターン）</li>
+</ul>
+
+<h3>Week 2：LLM会話履歴サービス（3.2対応）</h3>
+<p><strong>作る：</strong></p>
+<ul>
+  <li><code>system</code>（AIへの指示書）／<code>user</code>（ユーザー発言）／<code>assistant</code>（AI回答） メッセージを保存する</li>
+  <li>トークン上限を超えたら戦略に従って古いメッセージを削る</li>
+  <li><code>system</code> は絶対に消さない</li>
+  <li>最新メッセージが単体で大きすぎる場合は明示的にエラーにする</li>
+</ul>
+<p><strong>見るべき観点：</strong></p>
+<ul>
+  <li>LLMは<span class="t" data-tip="記憶を持たない。毎回の呼び出しが独立している状態。前回の会話はアプリ側で送り直す必要がある。">ステートレス</span>、履歴管理はアプリ側の責務</li>
+  <li><span class="t" data-tip="LLMが一度に読み込める文章量の上限。トークン数で表現される。">コンテキストウィンドウ</span>はコストと品質に直結</li>
+  <li><span class="t" data-tip="First In First Out。先に入れたものから順に削る方式。">FIFO</span>／重要度ベース／要約のトレードオフを口頭で説明できる</li>
+</ul>
+
+<h3>Week 3：AIエージェント・ツールディスパッチャー（3.5対応）</h3>
+<p><strong>作る：</strong></p>
+<ul>
+  <li><code>list_files</code>、<code>read_file</code>、<code>edit_file</code> を登録する</li>
+  <li>LLMからのツール呼び出し要求を引数バリデーション</li>
+  <li>複数ツールを<span class="t" data-tip="複数の処理を待たずに同時に走らせること。Pythonではasyncio、JavaScriptではPromise.allが代表。">並行実行</span>（<span class="t" data-tip="Pythonで非同期処理（並行実行）を書くための標準ライブラリ。">asyncio</span>／<span class="t" data-tip="JavaScript/TypeScriptで複数の非同期処理を並列実行する書き方。">Promise.all</span>）</li>
+  <li>失敗しても全体は落とさない。エラー文字列をLLMに返す（<span class="t" data-tip="一部が壊れても全体は止めず、機能を縮退して動かし続ける設計。">Graceful Degradation</span>）</li>
+</ul>
+<p><strong>見るべき観点：</strong></p>
+<ul>
+  <li>Function Callingの仕組み</li>
+  <li>引数バリデーション（<span class="t" data-tip="JSON形式のデータが期待した形式かを検証する標準仕様。">jsonschema</span>、<span class="t" data-tip="Pythonでデータ形式を定義・検証するための定番ライブラリ。">Pydantic</span>）</li>
+  <li>並行実行とタイムアウト</li>
+  <li><span class="t" data-tip="AIに勝手にやらせず、重要な操作の前に人間の承認を挟む方式。安全策の定番。">Human-in-the-loop</span>（破壊操作の確認プロンプト）</li>
+  <li><span class="t" data-tip="プログラムが触れる範囲を限定された「砂場」に閉じ込める仕組み。事故防止。">サンドボックス</span>ディレクトリ外を編集できないようにする</li>
+</ul>
+
+<h3>Week 4：Evalと安全性</h3>
+<p><strong>追加する：</strong></p>
+<ul>
+  <li>代表的な指示セット（10〜20件）を用意</li>
+  <li>エージェントが期待通りファイルを作るか自動検証するEvalスクリプト</li>
+  <li>サンドボックス外を編集できないことのテスト</li>
+  <li>READMEに制約、トレードオフ、本番化案を書く</li>
+</ul>
+<p><strong>合格ライン：</strong></p>
+<ul>
+  <li>コマンド一発で <code>make demo</code> または <code>docker compose up</code> でデモできる
+    （<span class="t" data-tip="よく使うコマンドの組み合わせに短い名前をつける仕組み。「make demo」と打てば長いコマンドが走る。">make</span>＝コマンド集約ツール、<span class="t" data-tip="アプリを「コンテナ」という箱に詰めて、どこでも同じように動かす仕組み。">docker</span>＝環境ごとアプリを箱に詰めて動かす仕組み）</li>
+  <li><code>make eval</code> でEvalが走り、合格率が表示される</li>
+  <li>「AIが生成しただけ」ではなく、失敗・安全性・評価まで考えていることがREADMEから伝わる</li>
+</ul>
+<div class="callout callout-ok">
+<strong>非エンジニアの強み発揮ポイント：</strong>Evalの「指示セット」設計は、ユースケース設計力そのもの。ここで非エンジニアが圧倒的に強いことを面接で語れるようにする。
+</div>
+
+<h2 id="phase4"><span class="phase-label">Phase 4</span>システム実務力とデバッグ（4週）</h2>
+
+<p>第4章のシステムデザイン面接は、巨大<span class="t" data-tip="Social Networking Service。TwitterやFacebookなどのソーシャル系サービス。">SNS</span>の設計ではなく、<strong>顧客環境の現実的な障害をどう切り分けるか</strong>が中心です。非エンジニアが最も苦手な領域なので、ここはじっくり時間をかけます。</p>
+
+<h3>Week 1：レートリミッター（3.1対応）</h3>
+<p><strong>学ぶ：</strong></p>
+<ul>
+  <li><span class="t" data-tip="バケツに一定速度でトークンを貯めて、1リクエスト＝1トークン消費するレート制限方式。短時間のバーストを許容しつつ平均を抑える。">Token Bucket</span>、<span class="t" data-tip="直近N秒間のリクエスト数を数えて制限する方式。常に滑らせて計測する。">Sliding Window</span>、<span class="t" data-tip="決まった時間枠（例：毎分0秒スタート）でカウントを区切るシンプルな方式。境目で偏りやすい。">Fixed Window</span></li>
+  <li>クライアント単位、エンドポイント単位の制限</li>
+  <li>429、<span class="t" data-tip="HTTPレスポンスに含まれる「次のリトライはこの秒数後に」という指示。">retry-after</span> ヘッダ</li>
+  <li>メモリ肥大、クライアント数増加への対応</li>
+</ul>
+
+<h3>Week 2：予約システムと並行処理（3.3対応）</h3>
+<p><strong>学ぶ：</strong></p>
+<ul>
+  <li>在庫管理、一意制約</li>
+  <li><span class="t" data-tip="先にロックせず、更新時に「他の人が変更してないか」を確認する方式。競合が少ない時に高速。">楽観ロック</span>／<span class="t" data-tip="読み始める時点でロックを取り、他の更新を待たせる方式。競合が多い時に安全。">悲観ロック</span></li>
+  <li>Seat Hold（<span class="t" data-tip="Time To Live。データの有効期限。例：5分後に自動消滅。">TTL</span>付き仮押さえ）</li>
+  <li><span class="t" data-tip="システムの状態が変わっていく流れを定義したもの。例：予約は「保留→確定→搭乗済み→キャンセル」など。">状態遷移</span>とイベント</li>
+</ul>
+
+<h3>Week 3：仮説駆動デバッグ（最重要）</h3>
+<p>第4章のデバッグ形式の面接は、<strong>面接官が情報を出し惜しみ、候補者から質問しないと進まない</strong>設計になっています。これが非エンジニアの最大の弱点。</p>
+<p><strong>練習するケース：</strong></p>
+<ul>
+  <li>CSVインポートで<span class="t" data-tip="メモリ不足によりOSがプロセスを強制終了させた状態。Out Of Memory Killed。">OOMKilled</span>（<span class="t" data-tip="プログラム終了時の状態を表す番号。137はOOMKilledの典型値（128+9＝SIGKILL）。">exit code</span> 137）</li>
+  <li>毎時0分に特定<span class="t" data-tip="サーバー1台分の単位。クラスタは複数ノードの集合体。">ノード</span>だけ高負荷（<span class="t" data-tip="大規模分散データベース。NoSQL系。複数サーバーに分散して保存する。">Cassandra</span>の<span class="t" data-tip="データ分散が偏り、特定サーバーだけにアクセスが集中する状態。性能劣化の典型原因。">ホットパーティション</span>）</li>
+  <li>LLM APIの429／503</li>
+  <li>ストリーミングレスポンスの途中切れ</li>
+  <li>RAGの検索精度低下</li>
+</ul>
+<p><strong>答え方の固定フォーム（必ずこの順で口に出す）：</strong></p>
+<ol>
+  <li><strong>観測事実の整理：</strong>「今わかっていることは◯◯と◯◯です」</li>
+  <li><strong>仮説の列挙：</strong>「考えられる原因は3つあります。A、B、C」</li>
+  <li><strong>検証順序の宣言：</strong>「最初に確認したいのは◯◯のログです。理由は◯◯」</li>
+  <li><strong>絞り込み：</strong>「Aの可能性は低そうです。次にBを確認します」</li>
+  <li><span class="t" data-tip="mitigation＝短期的な影響軽減策（とりあえず止血）。root cause＝根本原因の修正。">mitigation と root cause を分ける</span>：「短期対応は◯◯、根本対応は◯◯」</li>
+  <li><strong>再発防止：</strong>「同じことを起こさないために◯◯を入れます」</li>
+</ol>
+
+<h3>Week 4：アーキテクチャ Deep Dive</h3>
+<p>第6章で<span class="t" data-tip="LLMを開発する外資AI企業。エンタープライズ・オンプレ展開に強みがある。">Cohere</span>が特に重視するスタイル。自分のポートフォリオ（フェーズ5）のアーキ図を、応募する企業のJDに合わせて選び直して語れるようにします。</p>
+<p><strong>合格ライン：</strong></p>
+<ul>
+  <li>技術選定を「流行っているから」ではなく、制約・コスト・運用で説明できる</li>
+  <li>mitigation と根本修正を分けて話せる</li>
+  <li>顧客制約（<span class="t" data-tip="On-Premise。クラウドではなく顧客の自社サーバー内で動かす形態。">オンプレ</span>、<span class="t" data-tip="インターネットを経由しない、専用線で結ばれた閉じたネットワーク。金融や官公庁で多い。">閉域網</span>、データ越境禁止）を設計に反映できる</li>
+</ul>
+
+<h2 id="phase5"><span class="phase-label">Phase 5</span>FDEポートフォリオ（4週）</h2>
+
+<p>非エンジニアの履歴書だけで「実装できる」と信じてもらうのは難しい。GitHub、README、デモ、設計図で補います。<strong>最低1つ、できれば2つの旗艦プロジェクト</strong>を作ります。</p>
+
+<h3>旗艦プロジェクト案A：顧客向けRAGアシスタント（おすすめ）</h3>
+<p><strong>想定：</strong></p>
+<ul>
+  <li>顧客の社内ドキュメント、FAQ、規程、マニュアルを検索して回答</li>
+  <li>非技術者にも使えるCLI／簡易UI</li>
+  <li>回答に参照元を表示</li>
+</ul>
+<p><strong>必須要素：</strong></p>
+<ul>
+  <li>ドキュメント取り込み（<span class="t" data-tip="Portable Document Format。Adobeが作った文書形式。レイアウト崩れに強い。">PDF</span>／<span class="t" data-tip="軽量な記法で文書を書く形式。READMEや技術記事の標準。">Markdown</span>／Office）</li>
+  <li><span class="t" data-tip="長い文書を扱いやすい単位（数百〜千文字）に分割すること。検索精度に直結。">チャンク分割</span>／<span class="t" data-tip="文章を数値ベクトルに変換すること。意味の近い文章どうしのベクトルは近くなる。">Embedding</span>／<span class="t" data-tip="意味の近い文章を見つける検索方式。キーワード一致ではなく意味で探す。">Vector Search</span>（<span class="t" data-tip="オープンソースのVector検索DB。手軽に使える定番。">Chroma</span>、<span class="t" data-tip="高速なVector検索DB。本番運用向き。">Qdrant</span>、<span class="t" data-tip="PostgreSQLのVector検索拡張。既存のDBに追加できる。">pgvector</span>など）</li>
+  <li>LLM回答生成／回答評価（5〜10件の正解セット）</li>
+  <li><span class="t" data-tip="AIが事実と違うことを自信満々に答えてしまう現象。「幻覚」。RAGの主要対策ポイント。">ハルシネーション</span>対策（出典なしは答えない、信頼度閾値）</li>
+  <li>README</li>
+</ul>
+<p><strong>FDEらしい説明（READMEに必ず書く）：</strong></p>
+<ul>
+  <li>顧客は何に困っていたか</li>
+  <li>なぜ<span class="t" data-tip="AIモデル自体を追加学習で特定用途にカスタマイズする方法。コストと手間が大きい。">ファインチューニング</span>ではなくRAGか（第5章のメタファー「丸暗記 vs 辞書持ち込み」をそのまま使ってよい）</li>
+  <li>セキュリティ要件が強い場合のハイブリッド構成案</li>
+  <li>本番ではログ、権限、監査をどう設計するか</li>
+</ul>
+
+<h3>旗艦プロジェクト案B：AIエージェント業務自動化</h3>
+<p><strong>想定：</strong></p>
+<ul>
+  <li>顧客の問い合わせを読み、必要なツールを呼んで回答案を作る</li>
+  <li><span class="t" data-tip="Customer Relationship Management。顧客情報・商談を管理するシステム。SalesforceなどB系SaaSの王道。">CRM</span>／FAQ／チケットDBの<span class="t" data-tip="本物の代わりに動く偽物・模擬データ。開発・テストで本物を使えない時に作る。">モック</span>をツール化</li>
+  <li>人間の承認を挟んで返信</li>
+</ul>
+
+<h3>旗艦プロジェクト案C：データ取り込み＆分析パイプライン</h3>
+<p><strong>想定：</strong></p>
+<ul>
+  <li>CSV／APIからデータ取り込み、DB保存、異常値検知、レポート</li>
+  <li>LLMで自然言語の分析サマリー</li>
+</ul>
+<p><strong>必須要素：</strong><span class="t" data-tip="大量データを一度に処理する方式。リアルタイムではなく定期実行が多い。">バッチ</span>／チャンク処理（OOM対策）、リトライ、データ検証、エラー行隔離、構造化ログ、レポート生成</p>
+
+<h3>ポートフォリオの最低条件</h3>
+<ul>
+  <li>README（「何を作ったか」より「なぜそう設計したか」が中心）</li>
+  <li>セットアップ手順（コマンド一発で動く、<code>make demo</code> または <code>docker compose up</code>）</li>
+  <li>アーキテクチャ図</li>
+  <li>主要な設計判断</li>
+  <li>トレードオフ</li>
+  <li>テスト／Eval</li>
+  <li>失敗ケース</li>
+  <li>本番化するなら追加する項目</li>
+  <li>3分デモ動画またはスクリーンショット</li>
+</ul>
+
+<div class="callout callout-warn">
+第3章で繰り返し述べられるとおり、<strong>「環境構築で面接官を躓かせた時点で評価は地に落ちる」</strong>。<code>README → clone → 1コマンドで動く</code> まで揃えて初めて合格。
+</div>
+
+<h2 id="phase6"><span class="phase-label">Phase 6</span>面接対策（3週）</h2>
+
+<h3>Week 1：コーディング面接（90分フォーマット）</h3>
+<p>非エンジニアは、AI文脈に近く達成感が出る順に進めます。</p>
+<ol>
+  <li>3.4 LLM API CLIクライアント</li>
+  <li>3.2 LLM会話履歴サービス</li>
+  <li>3.5 AIエージェント・ツールディスパッチャー</li>
+  <li>3.1 レートリミッター</li>
+  <li>3.3 フライトチケット予約システム</li>
+</ol>
+<p>各問題は90分タイマーで練習。</p>
+<table>
+  <thead><tr><th>時間</th><th>やること</th></tr></thead>
+  <tbody>
+    <tr><td>0-10分</td><td>要件確認、スコープ確認、ユースケース列挙</td></tr>
+    <tr><td>10-20分</td><td>エンティティ、API、データ構造を決める</td></tr>
+    <tr><td>20-60分</td><td>最小実装（<span class="t" data-tip="エラーが起きない理想的なケース。まずここを通すのが鉄則。">happy path</span>）→ エラー処理</td></tr>
+    <tr><td>60-75分</td><td><span class="t" data-tip="実際に動かさず、紙やホワイトボードで処理の流れを追って確認すること。">ドライラン</span>、テスト、エッジケース</td></tr>
+    <tr><td>75-90分</td><td>拡張性、トレードオフ、本番化の議論</td></tr>
+  </tbody>
+</table>
+<p>面接では完璧な実装より、<strong>要件を明確にし、段階的に進め、最後に検証と拡張性まで語ること</strong>が大切。AIアシスタント（<span class="t" data-tip="Anthropic製のターミナル型AIコーディングツール。">Claude Code</span>、Cursor、<span class="t" data-tip="GitHubが提供するAIコード補完ツール。">Copilot</span>）の使用は許可されることが多いですが、<strong>「AIに丸投げした提出物は即不合格」</strong>（第3章）なので、自分でレビューして堅牢性を加える時間を確保する。</p>
+
+<h3>Week 2：システムデザイン</h3>
+<p>3形式を準備：</p>
+<ul>
+  <li>デバッグ・トラブルシューティング（Cohere／Databricks型）</li>
+  <li>自分のプロジェクトのArchitecture Deep Dive（Cohere／Palantir型）</li>
+  <li>AI／LLM特有のシステム設計（<span class="t" data-tip="エージェント型AIを開発する外資スタートアップ。実践コーディング重視の面接で有名。">Sierra</span>／OpenAI型）</li>
+</ul>
+<p><strong>優先お題：</strong></p>
+<ul>
+  <li>RAGシステムを本番導入する設計（<span class="t" data-tip="1つのシステムで複数の顧客（テナント）を同時に扱う方式。データ分離が重要。">マルチテナント</span>、権限、Eval、コスト）</li>
+  <li>複数顧客向けLLMアプリのマルチテナント設計</li>
+  <li>LLM APIの高<span class="t" data-tip="単位時間あたりの処理量。1秒あたり何リクエスト捌けるかなど。">スループット</span>処理（バックオフ、キュー、フォールバックモデル）</li>
+  <li>顧客から「リクエストが失敗する」と言われた時のデバッグ（情報を引き出すターン）</li>
+  <li>CSV取り込みジョブが8GBファイルで落ちるケース（第4章 ケース1）</li>
+  <li>毎時0分に特定ノードが高負荷（第4章 ケース2）</li>
+</ul>
+
+<h3>Week 3：行動面接</h3>
+<p>第5章の4テーマを、自分の非エンジニア経験に置き換えます。</p>
+<table>
+  <thead><tr><th>テーマ</th><th>自分の経験から拾うべき素材</th></tr></thead>
+  <tbody>
+    <tr><td>顧客フィードバックのプロダクト還元</td><td>顧客の声を一時対応ではなく仕組み／機能／規程に変えた経験</td></tr>
+    <tr><td>技術概念を非技術者に説明</td><td>RAG／AI／データ／APIをビジネスの言葉で説明した経験。第5章の「丸暗記 vs 辞書持ち込み」型のメタファーを自分でも作れるか</td></tr>
+    <tr><td>優先順位付け</td><td>複数ステークホルダーの要求をImpactと<span class="t" data-tip="根本解決ではなく、一時的に問題を回避する方法。「とりあえずスクリプトで対応」など。">Workaround</span>で整理した経験</td></tr>
+    <tr><td>エンタープライズ協業</td><td>セキュリティ／法務／情シス／事業部の間に入って前に進めた経験</td></tr>
+  </tbody>
+</table>
+
+<h4><span class="t" data-tip="行動面接の回答フォーマット。Situation（状況）／Task（課題）／Action（行動）／Result（結果）の頭文字。">STAR</span>＋Rテンプレ</h4>
+<ul>
+  <li><strong>Situation：</strong>顧客、事業、制約は何だったか</li>
+  <li><strong>Task：</strong>自分が解くべき課題は何だったか</li>
+  <li><strong>Action：</strong>どう分解し、どんな技術選択をしたか、なぜ他の選択肢を選ばなかったか</li>
+  <li><strong>Result：</strong>顧客／事業／プロダクトにどんな影響が出たか（数字）</li>
+  <li><strong>Reflection：</strong>今ならどう改善するか</li>
+</ul>
+
+<h2 id="phase7"><span class="phase-label">Phase 7</span>レジュメと応募戦略（1週）</h2>
+
+<h3>非エンジニアのレジュメ書き換え：Before / After</h3>
+
+<h4>Before（弱い書き方）</h4>
+<ul>
+  <li>AIツール導入プロジェクトを担当</li>
+  <li>顧客との打ち合わせを実施</li>
+  <li>社内業務改善を推進</li>
+  <li>データ分析を実施</li>
+</ul>
+
+<h4>After（FDE向け）</h4>
+<ul>
+  <li>大手製造業の問い合わせ対応業務に対し、FAQ／RAGプロトタイプを設計し、回答作成時間を<strong>30%削減</strong>するPoCを主導。Chroma＋OpenAI APIで実装し、出典付き回答とハルシネーション抑制を実装。</li>
+  <li>セキュリティ部門、情シス、事業部の3者間でデータ取り扱い要件を整理し、クラウド利用不可の制約下で<strong>機密データはオンプレDB、マニュアルのみクラウドVector DB</strong>のハイブリッド構成を提案・合意。</li>
+  <li>顧客の曖昧な要望をAPI要件、データモデル、運用フローに分解し、<strong>2週間で動作デモまで構築</strong>。Eval用の指示セット20件を整備し、回答正解率85%を計測。</li>
+  <li>同時並走する2案件の優先順位判断で、Workaround有無に基づくトリアージを提案。<strong>契約必須要件のAPI追加に集中し、契約獲得＋翌日のバグ修正を両立</strong>。</li>
+</ul>
+
+<h3>応募先別の見せ方（第6章＋第2章 統合）</h3>
+
+<table>
+  <thead>
+    <tr><th>応募先（カテゴリ）</th><th>代表企業</th><th>レジュメで前に出すもの</th><th>非エンジニアの現実度</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>外資AIラボ・Builder FDE</td><td>OpenAI／Anthropic／Sierra</td><td>エージェント実装、Tool Use、状態管理、Eval、本番デプロイ</td><td>△（中期目標）</td></tr>
+    <tr><td>外資AIラボ・エンタープライズ志向</td><td>Cohere</td><td>オンプレ／閉域網、セキュリティ、アーキ説明、Deep Dive</td><td>△</td></tr>
+    <tr><td>外資データ基盤</td><td><span class="t" data-tip="大規模データ分析プラットフォームを提供する外資企業。データエンジニアリングに強い。">Databricks</span></td><td>データ取り込み、<span class="t" data-tip="Extract（抽出）、Transform（加工）、Load（保存）の頭文字。データを集めて整える定番処理。">ETL</span>、SQL、パイプライン、分析基盤</td><td>▲</td></tr>
+    <tr><td>元祖FDE</td><td><span class="t" data-tip="FDEという職種を生み出したデータ分析プラットフォーム企業。政府・大企業向け。">Palantir</span></td><td>曖昧な課題の構造化、現場ファシリ、ドキュメント読解、実務的<span class="t" data-tip="Object-Oriented Design。オブジェクト指向設計。クラスや責務の分割をうまく行う設計手法。">OOD</span></td><td>◯（コンサル系強い）</td></tr>
+    <tr><td>日系AI企業</td><td><span class="t" data-tip="日本のAI・SaaS企業。AI・LLM事業部でFDE採用を行っている。">LayerX</span> 他</td><td>業務理解、要件定義、PoC→本番、現場ファシリテーション</td><td>◎</td></tr>
+    <tr><td>AIソリューション／導入支援</td><td>各<span class="t" data-tip="System Integrator。顧客のシステム構築を請け負う会社。日本だとNTTデータ、富士通、NRIなど。">SIer</span>、AI受託</td><td>顧客折衝、PoC、業務翻訳、運用設計</td><td>◎</td></tr>
+  </tbody>
+</table>
+
+<h3>応募前チェックリスト</h3>
+<ul class="checklist">
+  <li>GitHubにFDEらしいプロジェクトが<strong>1つ以上</strong>ある（できれば2つ）</li>
+  <li>READMEに<strong>トレードオフ</strong>が書いてある</li>
+  <li><strong>3分でデモ</strong>できる（録画もある）</li>
+  <li>自分の過去経験をFDE文脈で<strong>口頭で</strong>説明できる</li>
+  <li>顧客課題、技術選択、結果を<strong>数字</strong>で語れる</li>
+  <li>行動面接4テーマのSTARが準備済み（各3〜5分）</li>
+  <li>自分のプロジェクトのArchitecture Deep Dive台本がある</li>
+  <li>第4章のデバッグ5ケースを、面接官から情報を引き出す質問とともに再現できる</li>
+  <li>外資狙いなら、<strong>英語で</strong>上をすべてできる</li>
+  <li>LinkedIn／レジュメ／GitHubのプロフィールが一貫している</li>
+</ul>
+
+<h2 id="rhythm">第2部：週次の学習リズム</h2>
+
+<p>仕事をしながら進める場合は、週10〜12時間を目安。</p>
+
+<table>
+  <thead><tr><th>曜日</th><th>内容</th><th>目安時間</th></tr></thead>
+  <tbody>
+    <tr><td>月</td><td>概念学習、添付資料の該当章を読む</td><td>60分</td></tr>
+    <tr><td>火</td><td>小さく実装</td><td>90分</td></tr>
+    <tr><td>水</td><td>テスト、エラー処理、リトライ、ログ追加</td><td>60分</td></tr>
+    <tr><td>木</td><td>README、設計判断、トレードオフを書く</td><td>60分</td></tr>
+    <tr><td>金</td><td>15分で人に説明する練習（音読・録音）</td><td>30分</td></tr>
+    <tr><td>土</td><td>まとまった実装、ポートフォリオ作業</td><td>180分</td></tr>
+    <tr><td>日</td><td>振り返り、次週の課題設定</td><td>60分</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-ok">
+FDE準備で大事なのは、知識を増やすことより、<strong>毎週「動くもの」と「説明できる設計判断」を残すこと</strong>。
+</div>
+
+<h2 id="questioning">第3部：質問する力を鍛える（非エンジニア最大の弱点）</h2>
+
+<p>第4章のデバッグ系面接で、面接官は意図的に情報を出し惜しみます。「リクエストが失敗します」だけ言われて、そこから候補者が<strong>自分で</strong>「ログを見せてください」「メトリクスは？」「<span class="t" data-tip="Kubernetesでアプリを動かす最小単位。ざっくり「1つのアプリのインスタンス」と思えばよい。">Pod</span> の終了理由は？」と聞き出さないと、面接は前に進みません。</p>
+
+<p>非エンジニアは「相手に質問する」ことには慣れていますが、<strong>技術的に的確な質問</strong>には慣れていません。これを意図的に訓練します。</p>
+
+<h3>訓練法</h3>
+<ol>
+  <li>第4章のケース1（CSVインポート→OOMKilled）を音読。候補者の発言だけ覚える。</li>
+  <li>友人または自分で、面接官役と候補者役を分けて再演。情報は段階的にしか出さない。</li>
+  <li>候補者役は、必ず「<strong>次に何を見たいか／なぜ見たいか</strong>」を口に出す。</li>
+  <li>5ケース全部を、合計<strong>10時間</strong>かけて反復。</li>
+</ol>
+
+<h3>よく使う質問テンプレ（暗記する）</h3>
+<ul>
+  <li>「まず観測事実を整理させてください。今わかっているのは◯◯と◯◯ですね？」</li>
+  <li>「アプリケーションログにエラーや<span class="t" data-tip="エラーが発生した時にプログラムがどこで・どんな順で呼び出されていたかの記録。原因特定の手がかり。">スタックトレース</span>は出ていますか？」</li>
+  <li>「コンテナの終了理由とexit codeを教えてください」</li>
+  <li>「該当時間帯のCPU／メモリ／<span class="t" data-tip="ディスクへの読み書き量。重い処理だと数値が上がる。">ディスクI/O</span>メトリクスを見たいです」</li>
+  <li>「<span class="t" data-tip="複数サーバーの集合体。負荷分散や冗長化のために組む。">クラスタ</span>全体で均等に悪化していますか、それとも特定ノードに偏りがありますか？」</li>
+  <li>「データモデルの主キー／<span class="t" data-tip="データを複数サーバーに分散させる時の振り分けキー。これが偏るとホットパーティションが発生する。">パーティションキー</span>は何ですか？」</li>
+  <li>「再現する最小条件は何ですか？」</li>
+  <li>「これは初めて起きた事象ですか、それとも以前から潜んでいた可能性がありますか？」</li>
+</ul>
+
+<p>これは技術知識というより<strong>スクリプト</strong>。暗記して反射的に出るまで反復します。</p>
+
+<h2 id="english">第4部：英語対策（外資狙いの場合のみ）</h2>
+
+<p>第2章で明記のとおり、外資FDEでは<strong>日英バイリンガル能力</strong>が最大の障壁かつチャンス。日系FDEのみを狙うなら飛ばしてよい。</p>
+
+<h3>最低限揃えるもの</h3>
+<ul>
+  <li>自分のプロジェクトを<strong>英語で3分</strong>説明できる（録音して聞き直す）</li>
+  <li>行動面接4テーマを<strong>英語で</strong>STAR形式で語れる</li>
+  <li>技術的な質問（「Why didn't you use fine-tuning?」「How would you scale this?」）に英語で5分以上議論できる</li>
+  <li>第4章のデバッグ用質問テンプレを英語版で準備</li>
+</ul>
+
+<h2 id="milestone">第5部：マイルストーンと自己診断</h2>
+
+<h3>30日後の到達点</h3>
+<ul class="checklist">
+  <li>FDE志望理由が1ページで書けている</li>
+  <li>PythonまたはTypeScriptでCLIを1つ作った</li>
+  <li>外部APIを叩く小さなツールを作った</li>
+  <li>SQLiteまたはPostgreSQLでデータを保存した</li>
+  <li>LLM APIを呼ぶCLIを作った</li>
+  <li>READMEに使い方／失敗ケース／改善案を書いた</li>
+  <li>過去経験をFDE向けに3つのSTARエピソードに変換した</li>
+</ul>
+
+<h3>90日後の到達点</h3>
+<ul class="checklist">
+  <li>LLM API CLI が動く</li>
+  <li>会話履歴サービスが動く</li>
+  <li>Tool Dispatcher が動く</li>
+  <li>小さなRAGデモが動く</li>
+  <li>README付きGitHubリポジトリ</li>
+  <li>アーキテクチャ図</li>
+  <li>Eval／テスト</li>
+  <li>FDE型レジュメ初稿</li>
+  <li>行動面接 STAR 4本</li>
+  <li>自分のプロジェクトの Architecture Deep Dive 台本</li>
+</ul>
+
+<h3>180日後の到達点</h3>
+<ul class="checklist">
+  <li>旗艦プロジェクト2つ</li>
+  <li>第3章コーディング5題全部を90分で実装できる</li>
+  <li>第4章デバッグ5ケースを口頭で再生できる</li>
+  <li>行動面接4テーマ STAR 各2本ずつ（計8本）</li>
+  <li>外資狙いなら英語でも上をできる</li>
+  <li>模擬面接3回以上</li>
+</ul>
+
+<h2 id="skip">第6部：やらなくてよいこと</h2>
+
+<p>非エンジニアが最初に時間を使いすぎると遠回りになるもの。<strong>この6つは意識的に避ける</strong>。</p>
+
+<ul>
+  <li><strong>LeetCode Hardの大量演習</strong>：第3章で明記「<span class="t" data-tip="Data Structures and Algorithms。配列、ソート、二分探索などの古典的アルゴリズム問題。FDE面接ではほぼ出ない。">DSA</span>の重要度は極めて低い」。FDE面接ではほぼ出ない。Easy〜Mediumを軽く触る程度で十分。</li>
+  <li><strong>機械学習理論の深掘り</strong>：<span class="t" data-tip="機械学習モデルのパラメータを最適化する基本アルゴリズム。AIの内部仕組み。">勾配降下法</span>や<span class="t" data-tip="GPTやClaudeの基盤となっているAIモデルの構造。Attention機構を使う。">トランスフォーマー</span>内部実装をやる時間で、LLM APIをもう1つ呼べる。FDEは「LLMを使う側」であり「作る側」ではない。</li>
+  <li><strong>論文読み込み</strong>：RAG／Tool Use／Function Callingの概念がわかれば十分。論文サーベイは中期で。</li>
+  <li><strong><span class="t" data-tip="複数のサーバー上で動くアプリ（コンテナ）をまとめて管理するシステム。K8sと略す。本番運用の定番。">Kubernetes</span>の細部暗記</strong>：<span class="t" data-tip="YAML Ain't Markup Language。設定ファイルの記法。Kubernetesの設定で使われる。">YAML</span>の細かい記法より、「コンテナがOOMで再起動する仕組み」「exit code 137の意味」「Pod／Node／Clusterの関係」が言える方が10倍重要。</li>
+  <li><strong>大規模分散システムの理論だけの学習</strong>：Twitter／YouTubeを設計する練習はほぼ無駄。FDEは現場の特定顧客の問題を解くロール。</li>
+  <li><strong>きれいなUI作り込み</strong>：CLIで十分。READMEに動作スクショがあればよい。UIに時間を使うくらいなら、Evalセットを増やす。</li>
+</ul>
+
+<p>将来的には全部役立ちますが、FDE選考で<strong>まず</strong>問われるのは、顧客課題を理解し、実用的なコードを書き、失敗ケースとトレードオフを説明できること。</p>
+
+<h2 id="recovery">第7部：詰まった時のリカバリプラン</h2>
+
+<h3>「コードがどうしても書けない」</h3>
+<ul>
+  <li>旗艦プロジェクトを諦めて、<strong>既存OSS Agent（例：openai-agents-python、<span class="t" data-tip="LLMアプリ開発の有名フレームワーク。Tool UseやRAGをまとめて扱う。">LangChain</span>、<span class="t" data-tip="RAG構築に特化した有名フレームワーク。Vector DBやドキュメント取り込みが充実。">LlamaIndex</span> のサンプル）を <span class="t" data-tip="他人のリポジトリを自分のアカウントにコピーして派生版を作ること。GitHubの基本操作。">fork</span> してカスタマイズ</strong>するルートに切替。fork元を明記したうえで、自分が加えた変更（プロンプト、ツール追加、Eval整備）を README に書く。</li>
+  <li>それでも詰まる場合、<strong>Sales Engineer+ ／ AI導入支援 ／ AI Solution Engineer</strong> に的を絞り、レジュメで「プロンプト設計＋業務翻訳＋プロト構築」を前に出す。</li>
+</ul>
+
+<h3>「英語が伸びない」</h3>
+<ul>
+  <li>外資ラボを一旦外し、<strong>日系AI企業＋外資の日本拠点（Databricks Japan、Salesforce Japan、Microsoft Japan のAI関連職）に集中</strong>。Cohereは英語比率が高めなので後回し。</li>
+</ul>
+
+<h3>「忙しくて週10時間取れない」</h3>
+<ul>
+  <li>90日プランを <strong>180日に延長</strong>。順番は変えない。Week粒度ではなく月粒度で進める。</li>
+  <li>旗艦プロジェクトを <strong>1つ</strong> に絞る（推奨は案A：RAGアシスタント）。</li>
+</ul>
+
+<h3>「面接で落ちた」</h3>
+<ul>
+  <li>フィードバックがある場合は1つだけ重点強化。</li>
+  <li>フィードバックがない場合の典型的な落ち方：
+    <ul>
+      <li><strong>要件定義をすっ飛ばしてコードを書き始めた</strong> → フェーズ2の1ページ設計メモを再徹底</li>
+      <li><strong>デバッグで何も聞けず黙った</strong> → フェーズ4 Week 3を再走、質問テンプレを暗記</li>
+      <li><strong>行動面接が「調整しました」止まり</strong> → STAR の Action に技術判断を必ず1つ入れる練習</li>
+      <li><strong>READMEに「動きます」しかなかった</strong> → トレードオフを3つ書き足す</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="goal">最終ゴール</h2>
+
+<p>非エンジニアがFDEを目指すうえでの勝ち筋は、「自分はエンジニアと同じ土俵で競技プログラミングができます」ではありません。</p>
+
+<p><strong>勝ち筋は次の形です。</strong></p>
+
+<ul>
+  <li><strong>顧客の業務課題を深く理解できる</strong></li>
+  <li><strong>曖昧な要望を技術要件に分解できる</strong></li>
+  <li><strong>AI／LLMを使った小さなシステムを自分で実装できる</strong></li>
+  <li><strong>失敗ケース、セキュリティ、運用、評価まで考えられる</strong></li>
+  <li><strong>技術者にも非技術者にも説明できる</strong></li>
+  <li><strong>現場の学びをプロダクト改善に戻せる</strong></li>
+</ul>
+
+<p>原典が繰り返し示すとおり、FDEで見られるのは難問アルゴリズム力ではなく、<strong>実務の曖昧さを前に進める力</strong>です。非エンジニアはこの曖昧さへの耐性をすでに持っていることが多く、そこに「<strong>小さく作れる実装力</strong>」を足せば、かなり強い候補者になれます。</p>
+
+<div class="callout callout-ok">
+24週間後、あなたは「コードを書ける非エンジニア」ではなく、<strong>「現場を理解しているエンジニア」</strong>として面接の席に座っています。
+</div>
+
+<footer>
+  Based on FDE InterviewCat (Chapters 1–6 and Coding Problems 3.1–3.5)
+</footer>
+
+</body>
+</html>
